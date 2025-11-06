@@ -1,0 +1,102 @@
+{
+  "name": "Sample Multi-Cloud Deploy",
+  "description": "Example pipeline configuration for multi-cloud deployment",
+  "application": "deploy-nexus",
+  "expectedArtifacts": [],
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "system",
+  "limitConcurrent": true,
+  "notifications": [],
+  "parameterConfig": [
+    {
+      "default": "",
+      "description": "Version to deploy",
+      "hasOptions": false,
+      "label": "version",
+      "name": "version",
+      "required": true
+    },
+    {
+      "default": "",
+      "description": "SCIO instance name",
+      "hasOptions": false,
+      "label": "scio_instance",
+      "name": "scio_instance",
+      "required": false
+    },
+    {
+      "default": "CUSTOM",
+      "description": "Group name",
+      "hasOptions": true,
+      "label": "group",
+      "name": "group",
+      "options": [
+        {
+          "value": "CUSTOM"
+        },
+        {
+          "value": "glean-customers"
+        },
+        {
+          "value": "glean-prod"
+        }
+      ],
+      "required": false
+    }
+  ],
+  "stages": [
+    {
+      "name": "Deploy to GCP",
+      "refId": "gcp-deploy",
+      "requisiteStageRefIds": [],
+      "type": "deploy",
+      "comments": "Deploy to Google Cloud Platform"
+    },
+    {
+      "name": "Deploy to AWS",
+      "refId": "aws-deploy",
+      "requisiteStageRefIds": [],
+      "type": "deploy",
+      "comments": "Deploy to Amazon Web Services"
+    },
+    {
+      "name": "Deploy to Azure",
+      "refId": "azure-deploy",
+      "requisiteStageRefIds": [],
+      "type": "deploy",
+      "comments": "Deploy to Microsoft Azure"
+    },
+    {
+      "name": "Evaluate Soak Time",
+      "refId": "evaluate-soak",
+      "requisiteStageRefIds": [
+        "gcp-deploy",
+        "aws-deploy",
+        "azure-deploy"
+      ],
+      "type": "test",
+      "comments": "Evaluate deployment stability"
+    },
+    {
+      "name": "Soak Time Release",
+      "refId": "soak-release",
+      "requisiteStageRefIds": [
+        "evaluate-soak"
+      ],
+      "type": "approval",
+      "comments": "Wait for soak time approval"
+    },
+    {
+      "name": "Canary Check",
+      "refId": "canary-check",
+      "requisiteStageRefIds": [
+        "soak-release"
+      ],
+      "type": "test",
+      "comments": "Perform canary analysis"
+    }
+  ],
+  "triggers": [],
+  "updateTs": "1699632000000"
+}
+
