@@ -426,9 +426,8 @@ export function PipelinesView({ onEditPipeline }: PipelinesViewProps) {
               const errors = formErrors[pipeline.id] || {};
               
               return (
-                <>
+                <React.Fragment key={pipeline.id}>
                   <TableRow
-                    key={pipeline.id}
                     className="cursor-pointer hover:bg-slate-50"
                     onClick={() => toggleRow(pipeline.id)}
                   >
@@ -564,7 +563,7 @@ export function PipelinesView({ onEditPipeline }: PipelinesViewProps) {
                                   >
                                     <ParameterField
                                       parameter={param}
-                                      value={form[param.id as keyof typeof form] || param.defaultValue || ''}
+                                      value={form[param.id as keyof typeof form] ?? param.defaultValue ?? ''}
                                       onChange={(value) => updateDeploymentForm(pipeline.id, param.id, value)}
                                       error={errors[param.id as keyof typeof errors]}
                                     />
@@ -644,7 +643,7 @@ export function PipelinesView({ onEditPipeline }: PipelinesViewProps) {
                       </TableCell>
                     </TableRow>
                   )}
-                </>
+                </React.Fragment>
               );
             })}
           </TableBody>
